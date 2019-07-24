@@ -25,7 +25,7 @@ public class MailServiceImpl implements MailService {
             message.setTo(mail.getAddress()); // 邮件接受者
             message.setSubject(mail.getSubject()); // 主题
             message.setText(mail.getContent()); // 内容
-            mailSender.send(message);
+            mailSender.send(message);//发送邮件
         }
         catch (Exception e){
             throw new RuntimeException("邮件发送失败"+e.toString());
