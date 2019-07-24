@@ -1,0 +1,206 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>工作进度管理-公告管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" th:href="@{../assets/img/work.png}">
+  <link rel="apple-touch-icon-precomposed" th:href="@{../assets/i/app-icon72x722x.png}">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" th:href="@{../assets/css/amazeui.min.css}"/>
+  <link rel="stylesheet" th:href="@{../assets/css/admin.css}">
+  <script type="text/javascript" th:src="@{../webjars/jquery/3.0.0/jquery.js}"></script>
+  <script type="text/javascript" th:src="@{../assets/js/jquery.pagination.js}"></script>
+</head>
+<body onload="getNoticeList()">
+<header class="am-topbar admin-header">
+  <div class="am-topbar-brand">
+    <strong style="color: red">HAND</strong>
+    <small th:text = "${user.organization}"></small>
+  </div>
+
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
+      <li><a href="javascript:;"><span class="am-icon-envelope-o"></span> 通知<span class="am-badge am-badge-warning">5</span></a></li>
+      <li class="am-dropdown" data-am-dropdown>
+        <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+          <span class="am-icon-users" th:text = "${user.name}"></span> <span class="am-icon-caret-down"></span>
+        </a>
+        <ul class="am-dropdown-content">
+          <li><a href="#"><span class="am-icon-user"></span> 资料</a></li>
+          <li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
+          <li><a href="javascript:;" onclick="logout()"><span class="am-icon-power-off"></span> 退出</a></li>
+        </ul>
+      </li>
+      <li><a href="javascript:;" id="admin-fullscreen"><span class="am-icon-arrows-alt"></span> <span class="admin-fullText">开启全屏</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="am-cf admin-main">
+  <!-- sidebar start -->
+  <div class="admin-sidebar">
+    <ul class="am-list admin-sidebar-list">
+      <li><a href="admin-index"><span class="am-icon-home"></span> 首页</a></li>
+      <li class="admin-parent">
+        <a class="am-cf" data-am-collapse="{target: '#collapse-nav'}"><span class="am-icon-file"></span> 系统管理 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+        <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">
+          <li><a href="admin-user"><span class="am-icon-puzzle-piece"></span>用户管理</a></li>
+          <li><a href="admin-notice"><span class="am-icon-bookmark"></span> 公告管理</a></li>
+        </ul>
+      </li>
+      <li><a href="javascript:;" onclick="logout()"><span class="am-icon-sign-out"></span>注销</a></li>
+    </ul>
+
+    <div class="am-panel am-panel-default admin-sidebar-panel">
+      <div class="am-panel-bd">
+        <p><span class="am-icon-bookmark"></span> 公告</p>
+        <p th:text ="${notice.noticeText}"></p>
+        <p th:text ="${notice.userName}" align="right"></p>
+        <p th:text ="${notice.noticeDate}" align="right"></p>
+      </div>
+    </div>
+  </div>
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">公告管理</strong> / <small>所有公告</small></div>
+    </div>
+
+    <div class="am-g">
+      <div class="am-u-md-6 am-cf">
+        <div class="am-fl am-cf">
+          <div class="am-btn-toolbar am-fl">
+            <div class="am-btn-group am-btn-group-xs">
+              <button onclick="location.href='add-notice.html'" type="button" class="am-btn am-btn-default"><span class="am-icon-plus"></span> 新增</button>
+              <button type="button" class="am-btn am-btn-default"><span class="am-icon-save"></span> 保存</button>
+              <button type="button" class="am-btn am-btn-default"><span class="am-icon-archive"></span> 审核</button>
+              <button type="button" class="am-btn am-btn-default"><span class="am-icon-trash-o"></span> 删除</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="am-u-md-3 am-cf">
+        <div class="am-fr">
+          <div class="am-input-group am-input-group-sm">
+            <input type="text" class="am-form-field">
+            <span class="am-input-group-btn">
+                  <button class="am-btn am-btn-default" type="button">搜索</button>
+                </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        <form class="am-form">
+          <table class="am-table am-table-striped am-table-hover table-main" id="noticeTable">
+            <thead>
+            <tr>
+              <th class="table-check"><input type="checkbox" /></th>
+              <th class="table-id">ID</th>
+              <th class="table-title">发布人</th>
+              <th class="table-type">内容</th>
+              <th class="table-author">发布日期</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+          <div class="am-cf">
+            <span id="record_count"></span>
+            <div class="am-fr">
+              <ul class="am-pagination">
+                <li class="am-disabled"><a href="#">«</a></li>
+                <li class="am-active"><a href="#">1</a></li>
+                <!--<li><a href="#">2</a></li>-->
+                <li><a href="#">»</a></li>
+              </ul>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- content end -->
+
+</div>
+
+
+<!--<footer>
+  <hr>
+  <p class="am-padding-left">© 2014 AllMobilize, Inc. Licensed under MIT license.</p>
+</footer>-->
+<script th:inline="javascript">
+    function logout() {
+        if (confirm("确定要注销吗？")){
+            window.location.href = "logout";
+        }
+    }
+    function getNoticeList() {
+        $("#noticeTable tbody").empty();
+        $.ajax({
+            type:"GET",
+            url:"/work-task-manage/admin/notice-list",
+            dataType:"json",
+            success:function(data){
+                var list = eval(data.noticeList); //数组
+                $.each(list, function (index, item) {
+                    //循环获取数据
+                    var userName = list[index].userName;
+                    var noticeId =list[index].noticeId;
+                    var noticeText = list[index].noticeText;
+                    var noticeDate = list[index].noticeDate;
+                    var td = "<td><input type=\"checkbox\" /></td>"+"<td>"+noticeId+"</td>"+"<td>"+userName+"</td>"+"<td>"+noticeText+"</td>"+"<td>"+noticeDate+"</td>"+
+                        "<td><div class=\"am-btn-toolbar\"><div class=\"am-btn-group am-btn-group-xs\">\n" +
+                        "                    <button type='button'onclick=\"deleteNotice("+noticeId+")\" class=\"am-btn am-btn-default am-btn-xs am-text-danger\" ><span class=\"am-icon-trash-o\"></span> 删除</button>\n" +
+                        "                  </div>" +
+                        "                </div><td>";
+                        $("#noticeTable").append("<tr>" + td + "</tr>");
+                });
+            }
+        });
+    }
+    function deleteNotice(noticeId) {
+        if (confirm("确定删除吗?")){
+            $.ajax({
+                type:"POST",
+                url: "/work-task-manage/admin/delete-notice?noticeId="+noticeId,
+                success:function (data) {
+                    if ("success"==data){
+                        window.location.reload();
+                    }
+                    else{
+                        alert("删除失败"+data.errMsg);
+                    }
+                }
+            });
+        }
+    }
+</script>
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script th:src="@{../assets/js/polyfill/rem.min.js}"></script>
+<script th:src="@{../assets/js/polyfill/respond.min.js}"></script>
+<script th:src="@{../assets/js/amazeui.legacy.js}"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script th:src="@{../assets/js/jquery.min.js}"></script>
+<script th:src="@{../assets/js/amazeui.min.js}"></script>
+<!--<![endif]-->
+<script th:src="@{../assets/js/app.js}"></script>
+</body>
+</html>
