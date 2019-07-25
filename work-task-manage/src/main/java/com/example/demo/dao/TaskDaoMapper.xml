@@ -3,12 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.dao.TaskDao">
-    <select id="queryTaskList" resultType="com.example.demo.entity.Task">
+    <select id="queryTaskList"  resultType="com.example.demo.entity.Task">
         SELECT
         *
         FROM
         tb_task
-        ORDER BY create_date DESC
+        ORDER BY create_date DESC,task_id DESC
     </select>
     <select id="queryTaskById" parameterType="int" resultType="com.example.demo.entity.Task">
         SELECT
@@ -65,5 +65,10 @@
         tb_task
         WHERE
         create_date = CURDATE()
+    </select>
+    <select id="queryTaskCount" resultType="int">
+        SELECT count(task_id)
+        FROM
+        tb_task
     </select>
 </mapper>

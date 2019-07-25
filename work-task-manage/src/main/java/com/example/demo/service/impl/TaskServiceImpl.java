@@ -3,6 +3,8 @@ package com.example.demo.service.impl;
 import com.example.demo.dao.TaskDao;
 import com.example.demo.entity.Task;
 import com.example.demo.service.TaskService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -15,9 +17,12 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     TaskDao taskDao;
     @Override
-    @Cacheable(cacheNames = "taskList",key = "#root.method.name")
-    public List<Task> getTaskList() {
-        return taskDao.queryTaskList();
+    @Cacheable(cacheNames = "taskList")
+    public PageInfo<Task> getTaskList(int pageIndex, int pageSize) {
+        PageHelper.startPage(pageIndex,pageSize);
+        List<Task> taskList = taskDao.queryTaskList();
+        PageInfo<Task> pageInfo = new PageInfo<>(taskList);
+        return pageInfo;
     }
 
     @Override
@@ -87,7 +92,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @CacheEvict(cacheNames = "taskList",allEntries=true)
+   @CacheEvict(cacheNames = "taskList",allEntries=true)
     public boolean modifyTaskInfo(Task task) {
         if (task!=null){
             try{
@@ -114,5 +119,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> getNewTask() {
         return taskDao.queryNewTask();
+    }
+
+    @Override
+    public int getTaskCount() {
+        return taskDao.queryTaskCount();
     }
 }

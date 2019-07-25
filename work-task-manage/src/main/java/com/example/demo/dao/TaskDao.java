@@ -1,14 +1,17 @@
 package com.example.demo.dao;
 
 import com.example.demo.entity.Task;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface TaskDao {
     //查询所有工作任务
     List<Task> queryTaskList();
+    //List<Task> queryTaskList(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize);
     //根据ID查询任务
     Task queryTaskById(int taskId);
     //新增工作任务
@@ -23,4 +26,6 @@ public interface TaskDao {
     int updateTaskInfo(Task task);
     //查询当日任务
     List<Task> queryNewTask();
+    //统计任务条数
+    int queryTaskCount();
 }

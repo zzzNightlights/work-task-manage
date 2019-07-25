@@ -3,8 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.entity.Task;
 import com.example.demo.entity.User;
 import com.example.demo.service.TaskService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
@@ -19,10 +21,10 @@ public class TaskController {
     @Autowired
     TaskService taskService;
     @RequestMapping("/task-list")
-    public Map<String,Object> getTaskList(int pageIndex, int pageSize){
+    public Map<String,Object> getTaskList(@RequestParam(value="pageIndex",defaultValue="1")int pageIndex, int pageSize){
         Map<String,Object> modelMap = new HashMap<String, Object>();
-        List<Task> list =taskService.getTaskList();
-        List<Task> taskList = new ArrayList<>();
+        PageInfo<Task> pageInfo =taskService.getTaskList(pageIndex,pageSize);
+        /*List<Task> taskList = new ArrayList<>();
         int n = (pageIndex - 1) * pageSize;
         int size = n + pageSize;
         if (size>list.size()){
@@ -33,13 +35,14 @@ public class TaskController {
             Task task = list.get(i);
             taskList.add(task);
         }
-        modelMap.put("taskList",taskList);
+        modelMap.put("taskList",taskList);*/
+        modelMap.put("taskList", pageInfo.getList());
         return modelMap;
     }
     @RequestMapping("/getListSize")
     public int getListSize(){
-        List<Task> list =taskService.getTaskList();
-        return list.size();
+        int count =taskService.getTaskCount();
+        return count;
     }
     @RequestMapping("/my-task-list")
     public Map<String,Object> getMyTaskList(int userId){

@@ -52,3 +52,7 @@ mybatis:
 #      example:
 #        demo:
 #          dao: debug
+#pagehelper:
+#  helper-dialect: mysql
+#  reasonable: true
+#  support-methods-arguments: true
