@@ -15,4 +15,6 @@ public interface NoticeDao {
     int deleteNotice(int noticeId);
     //新增公告
     int insertNotice(Notice notice);
+    //统计公告总数
+    int queryNoticeNum();
 }

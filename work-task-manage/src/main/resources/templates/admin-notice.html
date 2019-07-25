@@ -15,7 +15,7 @@
   <script type="text/javascript" th:src="@{../webjars/jquery/3.0.0/jquery.js}"></script>
   <script type="text/javascript" th:src="@{../assets/js/jquery.pagination.js}"></script>
 </head>
-<body onload="getNoticeList()">
+<body onload="init()">
 <header class="am-topbar admin-header">
   <div class="am-topbar-brand">
     <strong style="color: red">HAND</strong>
@@ -118,18 +118,8 @@
             <tbody>
             </tbody>
           </table>
-          <div class="am-cf">
-            <span id="record_count"></span>
-            <div class="am-fr">
-              <ul class="am-pagination">
-                <li class="am-disabled"><a href="#">«</a></li>
-                <li class="am-active"><a href="#">1</a></li>
-                <!--<li><a href="#">2</a></li>-->
-                <li><a href="#">»</a></li>
-              </ul>
-            </div>
-          </div>
         </form>
+        <div id="page" align="right"></div>
       </div>
     </div>
   </div>
@@ -137,22 +127,53 @@
 
 </div>
 
-
-<!--<footer>
-  <hr>
-  <p class="am-padding-left">© 2014 AllMobilize, Inc. Licensed under MIT license.</p>
-</footer>-->
 <script th:inline="javascript">
     function logout() {
         if (confirm("确定要注销吗？")){
             window.location.href = "logout";
         }
     }
-    function getNoticeList() {
+    var pageIndex = 1;     //页面索引初始值
+    var pageSize = 5;     //每页显示条数初始化，修改显示条数，修改这里即可
+    var PageCount = 0;//数据长度，决定展示页的数量
+    function init (){
+        PageCount = getListCount();    //获取Count长度
+        InitPager();
+    }
+    function InitPager() {
+        //分页，PageCount是总条目数，这是必选参数，其它参数都是可选
+        $("#page").pagination(PageCount, {
+            callback: PageCallback,  //PageCallback() 为翻页调用次函数。
+            prev_text: "上一页",
+            next_text: "下一页",
+            items_per_page: pageSize,
+            num_edge_entries: 2,       //两侧首尾分页条目数
+            num_display_entries: 3,    //连续分页主体部分分页条目数
+            current_page: pageIndex - 1,   //当前页索引
+        });
+    }
+    //翻页调用
+    function PageCallback(index) {
+        getNoticeList(index + 1);
+    }
+    function getListCount() {
+        $.ajaxSetup({
+            async:false
+        });
+        $.ajax({
+            type:"GET",
+            url:"/work-task-manage/admin/noticeList-size",
+            success:function (data) {
+                PageCount = data;
+            }
+        });
+        return PageCount;
+    }
+    function getNoticeList(pageIndex) {
         $("#noticeTable tbody").empty();
         $.ajax({
             type:"GET",
-            url:"/work-task-manage/admin/notice-list",
+            url:"/work-task-manage/admin/notice-list?pageIndex="+pageIndex+"&pageSize="+pageSize,
             dataType:"json",
             success:function(data){
                 var list = eval(data.noticeList); //数组
@@ -198,7 +219,6 @@
 <![endif]-->
 
 <!--[if (gte IE 9)|!(IE)]><!-->
-<script th:src="@{../assets/js/jquery.min.js}"></script>
 <script th:src="@{../assets/js/amazeui.min.js}"></script>
 <!--<![endif]-->
 <script th:src="@{../assets/js/app.js}"></script>

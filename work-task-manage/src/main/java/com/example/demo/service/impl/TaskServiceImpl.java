@@ -47,8 +47,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTaskByUserId(int userId) {
-        return taskDao.queryTaskByUserId(userId);
+    public PageInfo<Task> getTaskByUserId(int userId, int pageIndex, int pageSize) {
+        PageHelper.startPage(pageIndex,pageSize);
+        List<Task> taskList = taskDao.queryTaskByUserId(userId);
+        PageInfo<Task> pageInfo = new PageInfo<>(taskList);
+        return pageInfo;
     }
 
     @Override
@@ -124,5 +127,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public int getTaskCount() {
         return taskDao.queryTaskCount();
+    }
+
+    @Override
+    public int getMyTaskCount(int userId) {
+        return taskDao.queryMyTaskCount(userId);
     }
 }

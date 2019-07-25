@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.NoticeDao">
+    <select id="queryNewNotice" resultType="com.example.demo.entity.Notice" >
+        SELECT
+        *
+        FROM
+        (SELECT
+        * FROM
+        tb_notice
+        ORDER BY
+        notice_date
+        DESC ) t
+        LIMIT 1
+    </select>
+    <select id="queryNoticeList" resultType="com.example.demo.entity.Notice">
+        SELECT
+        *
+        FROM
+        tb_notice
+    </select>
+    <delete id="deleteNotice" parameterType="int">
+        DELETE
+        FROM
+        tb_notice
+        WHERE
+        notice_id = #{noticeId}
+    </delete>
+    <insert id="insertNotice" parameterType="com.example.demo.entity.Notice" useGeneratedKeys="true">
+        INSERT INTO
+        tb_notice(user_id,user_name,notice_text,notice_date)
+        values (#{userId},#{userName},#{noticeText},#{noticeDate})
+    </insert>
+</mapper>

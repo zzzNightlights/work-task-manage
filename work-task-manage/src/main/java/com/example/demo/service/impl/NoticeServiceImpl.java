@@ -3,6 +3,8 @@ package com.example.demo.service.impl;
 import com.example.demo.dao.NoticeDao;
 import com.example.demo.entity.Notice;
 import com.example.demo.service.NoticeService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,11 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public List<Notice> findNoticeList() {
-        return noticeDao.queryNoticeList();
+    public PageInfo<Notice> findNoticeList(int pageIndex,int pageSize) {
+        PageHelper.startPage(pageIndex,pageSize);
+        List<Notice> noticeList = noticeDao.queryNoticeList();
+        PageInfo<Notice> pageInfo = new PageInfo<>(noticeList);
+        return pageInfo;
     }
 
     @Override
@@ -59,5 +64,10 @@ public class NoticeServiceImpl implements NoticeService {
         }else{
             throw new RuntimeException("公告ID不能为空");
         }
+    }
+
+    @Override
+    public int getNoticeNum() {
+        return noticeDao.queryNoticeNum();
     }
 }

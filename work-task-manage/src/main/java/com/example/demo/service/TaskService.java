@@ -12,7 +12,7 @@ public interface TaskService {
     //发布新任务
     boolean addTask(Task task);
     //获取个人任务列表
-    List<Task> getTaskByUserId(int userId);
+    PageInfo<Task> getTaskByUserId(int userId, int pageIndex, int pageSize);
     //根据任务ID删除任务
     boolean removeTaskById(int taskId);
     //根据任务ID完成任务
@@ -25,4 +25,6 @@ public interface TaskService {
     List<Task> getNewTask();
     //获取任务总数
     int getTaskCount();
+    //获取我的任务总数
+    int getMyTaskCount(int userId);
 }

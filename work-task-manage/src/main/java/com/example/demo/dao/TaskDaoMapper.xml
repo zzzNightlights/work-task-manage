@@ -71,4 +71,10 @@
         FROM
         tb_task
     </select>
+    <select id="queryMyTaskCount" resultType="int" parameterType="int">
+        SELECT count(task_id)
+        FROM
+        tb_task
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

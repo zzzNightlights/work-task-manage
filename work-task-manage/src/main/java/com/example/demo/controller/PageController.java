@@ -6,6 +6,7 @@ import com.example.demo.entity.User;
 import com.example.demo.service.NoticeService;
 import com.example.demo.service.TaskService;
 import com.example.demo.service.UserService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,13 +33,13 @@ public class PageController {
     public String index(HttpSession session, Model model){
         User user = (User) session.getAttribute("user");
         List<Task> newTaskList = taskService.getNewTask();
-        List<Task> myTaskList = taskService.getTaskByUserId(user.getUserId());
+        PageInfo<Task> myTaskList = taskService.getTaskByUserId(user.getUserId(),1,5);
         List<User> userList = userService.findAllUserInfo();
         Notice notice = noticeService.findNewNotice();
         model.addAttribute("notice",notice);
         model.addAttribute("userListSize",userList.size());
         model.addAttribute("newTaskListSize",newTaskList.size());
-        model.addAttribute("myTaskListSize",myTaskList.size());
+        model.addAttribute("myTaskListSize",myTaskList.getList().size());
         model.addAttribute("user",user);
         return "index";
     }

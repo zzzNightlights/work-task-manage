@@ -30,6 +30,5 @@ public class MailServiceImpl implements MailService {
         catch (Exception e){
             throw new RuntimeException("邮件发送失败"+e.toString());
         }
-
     }
 }

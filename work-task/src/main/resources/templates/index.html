@@ -1,0 +1,197 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>工作进度管理-首页</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" th:href="@{assets/img/work.png}">
+  <link rel="apple-touch-icon-precomposed" th:href="@{assets/i/app-icon72x722x.png}">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" th:href="@{assets/css/amazeui.min.css}"/>
+  <link rel="stylesheet" th:href="@{assets/css/admin.css}">
+  <script type="text/javascript" th:src="@{webjars/jquery/3.0.0/jquery.js}"></script>
+  <script type="text/javascript" th:src="@{assets/js/jquery.pagination.js}"></script>
+</head>
+<body onload="init()">
+<header class="am-topbar admin-header">
+  <div class="am-topbar-brand">
+    <strong style="color: red">HAND</strong>
+    <small th:text = "${user.organization}"></small>
+  </div>
+
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
+      <li><a href="javascript:;"><span class="am-icon-envelope-o"></span> 通知 <span class="am-badge am-badge-warning">5</span></a></li>
+      <li class="am-dropdown" data-am-dropdown>
+        <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+          <span class="am-icon-users" th:text = "${user.name}"></span><span class="am-icon-caret-down"></span>
+        </a>
+        <ul class="am-dropdown-content">
+          <li><a href="#"><span class="am-icon-user"></span> 资料</a></li>
+          <li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
+          <li><a href="javascript:;" onclick="logout()"><span class="am-icon-power-off"></span> 退出</a></li>
+        </ul></li>
+      <li><a href="javascript:;" id="admin-fullscreen"><span class="am-icon-arrows-alt"></span> <span class="admin-fullText">开启全屏</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="am-cf admin-main">
+  <!-- sidebar start -->
+  <div class="admin-sidebar">
+    <ul class="am-list admin-sidebar-list">
+      <li><a href="index"><span class="am-icon-home"></span> 首页</a></li>
+      <li class="admin-parent">
+        <a class="am-cf" data-am-collapse="{target: '#collapse-nav'}"><span class="am-icon-file"></span> 任务管理 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+        <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">
+          <li><a href="new-task"><span class="am-icon-pencil-square-o"></span> 发布任务</a></li>
+          <li><a href="my-task"><span class="am-icon-calendar"></span> 我的任务</a></li>
+        </ul>
+      </li>
+      <li><a href="modify-pwd"><span class="am-icon-pencil-square-o"></span>修改密码</a></li>
+      <li><a href="javascript:;" onclick="logout()"><span class="am-icon-sign-out"></span>注销</a></li>
+    </ul>
+
+    <div class="am-panel am-panel-default admin-sidebar-panel">
+      <div class="am-panel-bd">
+        <p><span class="am-icon-bookmark"></span> 公告</p>
+        <p th:text ="${notice.noticeText}"></p>
+        <p th:text ="${notice.userName}" align="right"></p>
+        <p th:text ="${notice.noticeDate}" align="right"></p>
+      </div>
+    </div>
+  </div>
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">首页</strong> / <small>工作任务列表</small></div>
+    </div>
+
+    <ul class="am-avg-sm-1 am-avg-md-4 am-margin am-padding am-text-center admin-content-list ">
+      <li><a href="#" class="am-text-success"><span class="am-icon-btn am-icon-file-text"></span><br/>今日任务<br/><span th:text="${newTaskListSize}"></span></a></li>
+      <li><a href="#" class="am-text-warning"><span class="am-icon-btn am-icon-briefcase"></span><br/>任务总数<br/><span id="taskCount"></span></a></li>
+      <li><a href="#" class="am-text-danger"><span class="am-icon-btn am-icon-user-md"></span><br/>用户总数<br/><span th:text="${userListSize}"></span></a></li>
+      <li><a href="#" class="am-text-secondary"><span class="am-icon-btn am-icon-user-md"></span><br/>我的任务<br/><span th:text="${myTaskListSize}"></span></a></li>
+    </ul>
+
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        <table  class="am-table am-table-bd am-table-striped admin-content-table" id="taskTable">
+          <thead>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div id="page" align="right"></div>
+    </div>
+  </div>
+</div>
+<script>
+  function logout() {
+      if (confirm("确定要注销吗？")){
+          window.location.href = "logout";
+      }
+  }
+  var pageIndex = 1;     //页面索引初始值
+  var pageSize = 5;     //每页显示条数初始化，修改显示条数，修改这里即可
+  var PageCount = 0;//数据长度，决定展示页的数量
+  function init (){
+      PageCount = getListCount();    //获取Count长度
+      $("#taskCount").text(PageCount);
+      InitPager();
+  }
+  function InitPager() {
+      //分页，PageCount是总条目数，这是必选参数，其它参数都是可选
+      $("#page").pagination(PageCount, {
+          callback: PageCallback,  //PageCallback() 为翻页调用次函数。
+          prev_text: "上一页",
+          next_text: "下一页",
+          items_per_page: pageSize,
+          num_edge_entries: 2,       //两侧首尾分页条目数
+          num_display_entries: 3,    //连续分页主体部分分页条目数
+          current_page: pageIndex - 1,   //当前页索引
+      });
+  }
+  //翻页调用
+  function PageCallback(index) {
+      getTaskList(index + 1);
+  }
+  function getListCount() {
+      $.ajaxSetup({
+         async:false
+      });
+      $.ajax({
+         type:"GET",
+          url:"/work-task-manage/task/getListSize",
+          success:function (data) {
+              PageCount = data;
+          }
+      });
+      return PageCount;
+  }
+    function getTaskList(pageIndex) {
+        $("#taskTable tbody").empty();
+        $("#taskTable").append("<tr>\n" +
+            "            <th>创建日期</th>\n" +
+            "            <th>创建人</th>\n" +
+            "            <th>工作内容</th>\n" +
+            "            <th>预计完成时间</th>\n" +
+            "            <th>实际完成时间</th>\n" +
+            "            <th>状态</th>\n" +
+            "          </tr>");
+        $.ajax({
+            type:"GET",
+            url:"/work-task-manage/task/task-list?pageIndex="+pageIndex+"&pageSize="+pageSize,
+            dataType:"json",
+            success:function(data){
+                var list = eval(data.taskList); //数组
+                $.each(list, function (index, item) {
+                    //循环获取数据
+                    var createDate =list[index].createDate;
+                    createDate = createDate.substr(0,10);
+                    var userName = list[index].userName;
+                    var taskContent = list[index].taskContent;
+                    var exEndDate = list[index].exEndDate;
+                    if(exEndDate!=null){
+                        exEndDate = exEndDate.substr(0,10);
+                    }
+                    var actEndDate = list[index].actEndDate;
+                    if(actEndDate!=null){
+                        actEndDate = actEndDate.substr(0,10);
+                    }
+                    else{
+                        actEndDate = "";
+                    }
+                    var taskStatus = list[index].taskStatus;
+                    var td = "<td>"+createDate+"</td>"+"<td>"+userName+"</td>"+"<td>"+taskContent+"</td>"+"<td>"+exEndDate+"</td>"+
+                        "<td>"+actEndDate+"</td>" +"<td>"+taskStatus+"</td>";
+                    $("#taskTable").append("<tr>"+td+"</tr>");
+                });
+            }
+        });
+    }
+</script>
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script th:src="@{assets/js/polyfill/rem.min.js}"></script>
+<script th:src="@{assets/js/polyfill/respond.min.js}"></script>
+<script th:src="@{assets/js/amazeui.legacy.js}"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script th:src="@{assets/js/amazeui.min.js}"></script>
+<!--<![endif]-->
+<script th:src="@{assets/js/app.js}"></script>
+</body>
+</html>

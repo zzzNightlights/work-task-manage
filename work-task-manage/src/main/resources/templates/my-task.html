@@ -15,7 +15,7 @@
   <script type="text/javascript" th:src="@{webjars/jquery/3.0.0/jquery.js}"></script>
   <script type="text/javascript" th:src="@{assets/js/jquery.pagination.js}"></script>
 </head>
-<body onload="getTaskList()">
+<body onload="init()">
 <header class="am-topbar admin-header">
   <div class="am-topbar-brand">
     <strong style="color: red">HAND</strong>
@@ -89,7 +89,7 @@
             </div>
 
             <div class="am-form-group am-margin-left am-fl">
-              <select id="taskStatusSelect" onchange="getTaskList()">
+              <select id="taskStatusSelect" onchange="init()">
                 <option value="全部" selected = "selected">全部</option>
                 <option value="进行中">进行中</option>
                 <option value="已完成">已完成</option>
@@ -127,36 +127,9 @@
             </tr>
             </thead>
             <tbody>
-            <!--<tr>
-              <td><input type="checkbox" /></td>
-              <td>2</td>
-              <td><a href="#">Business management</a></td>
-              <td>default</td>
-              <td>测试1号</td>
-              <td>2014年9月4日 7:28:47</td>
-              <td>
-                <div class="am-btn-toolbar">
-                  <div class="am-btn-group am-btn-group-xs">
-                    <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button>
-                    <button class="am-btn am-btn-default am-btn-xs"><span class="am-icon-copy"></span> 复制</button>
-                    <button class="am-btn am-btn-default am-btn-xs am-text-danger"><span class="am-icon-trash-o"></span> 删除</button>
-                  </div>
-                </div>
-              </td>
-            </tr>-->
             </tbody>
           </table>
-          <!--div class="am-cf">
-            <span id="record_count"></span>
-            <div class="am-fr">
-              <ul class="am-pagination">
-                <li class="am-disabled"><a href="#">«</a></li>
-                <li class="am-active"><a href="#">1</a></li>
-                &lt;!&ndash;<li><a href="#">2</a></li>&ndash;&gt;
-                <li><a href="#">»</a></li>
-              </ul>
-            </div>
-          </div>-->
+          <div id="page" align="right"></div>
         </form>
       </div>
     </div>
@@ -164,25 +137,55 @@
   <!-- content end -->
 
 </div>
-
-
-<!--<footer>
-  <hr>
-  <p class="am-padding-left">© 2014 AllMobilize, Inc. Licensed under MIT license.</p>
-</footer>-->
 <script th:inline="javascript">
+    var userId = [[${user.userId}]];
     function logout() {
         if (confirm("确定要注销吗？")){
             window.location.href = "logout";
         }
     }
-    var userId = [[${user.userId}]];
-    function getTaskList() {
+    var pageIndex = 1;     //页面索引初始值
+    var pageSize = 5;     //每页显示条数初始化，修改显示条数，修改这里即可
+    var PageCount = 0;//数据长度，决定展示页的数量
+    function init (){
+        PageCount = getListCount();    //获取Count长度
+        InitPager();
+    }
+    function InitPager() {
+        //分页，PageCount是总条目数，这是必选参数，其它参数都是可选
+        $("#page").pagination(PageCount, {
+            callback: PageCallback,  //PageCallback() 为翻页调用次函数。
+            prev_text: "上一页",
+            next_text: "下一页",
+            items_per_page: pageSize,
+            num_edge_entries: 2,       //两侧首尾分页条目数
+            num_display_entries: 3,    //连续分页主体部分分页条目数
+            current_page: pageIndex - 1,   //当前页索引
+        });
+    }
+    //翻页调用
+    function PageCallback(index) {
+        getTaskList(index + 1);
+    }
+    function getListCount() {
+        $.ajaxSetup({
+            async:false
+        });
+        $.ajax({
+            type:"GET",
+            url:"/work-task-manage/task/getMyListSize?userId="+userId,
+            success:function (data) {
+                PageCount = data;
+            }
+        });
+        return PageCount;
+    }
+    function getTaskList(pageIndex) {
         var statusValue = $("#taskStatusSelect").val();
         $("#taskTable tbody").empty();
         $.ajax({
             type:"GET",
-            url:"/work-task-manage/task/my-task-list?userId="+userId,
+            url:"/work-task-manage/task/my-task-list?userId="+userId+"&pageIndex="+pageIndex+"&pageSize="+pageSize,
             dataType:"json",
             success:function(data){
                 var list = eval(data.taskList); //数组
@@ -273,7 +276,6 @@
 <![endif]-->
 
 <!--[if (gte IE 9)|!(IE)]><!-->
-<script th:src="@{assets/js/jquery.min.js}"></script>
 <script th:src="@{assets/js/amazeui.min.js}"></script>
 <!--<![endif]-->
 <script th:src="@{assets/js/app.js}"></script>

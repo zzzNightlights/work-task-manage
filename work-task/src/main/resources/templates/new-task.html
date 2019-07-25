@@ -1,0 +1,217 @@
+<!doctype html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>工作进度管理-发布任务</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" th:href="@{assets/img/work.png}">
+  <link rel="apple-touch-icon-precomposed" th:href="@{assets/i/app-icon72x722x.png}">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" th:href="@{assets/css/amazeui.min.css}"/>
+  <link rel="stylesheet" th:href="@{assets/css/admin.css}">
+  <script type="text/javascript" th:src="@{webjars/jquery/3.0.0/jquery.js}"></script>
+</head>
+<body onload="getDate()">
+<header class="am-topbar admin-header">
+  <div class="am-topbar-brand">
+    <strong style="color: red">HAND</strong>
+    <small th:text = "${user.organization}"></small>
+  </div>
+
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+
+  <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
+
+    <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
+      <li><a href="javascript:;"><span class="am-icon-envelope-o"></span> 通知<span class="am-badge am-badge-warning">5</span></a></li>
+      <li class="am-dropdown" data-am-dropdown>
+        <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+          <span class="am-icon-users" th:text = "${user.name}"></span> <span class="am-icon-caret-down"></span>
+        </a>
+        <ul class="am-dropdown-content">
+          <li><a href="#"><span class="am-icon-user"></span> 资料</a></li>
+          <li><a href="#"><span class="am-icon-cog"></span> 设置</a></li>
+          <li><a href="javascript:;" onclick="logout()"><span class="am-icon-power-off"></span> 退出</a></li>
+        </ul>
+      </li>
+      <li><a href="javascript:;" id="admin-fullscreen"><span class="am-icon-arrows-alt"></span> <span class="admin-fullText">开启全屏</span></a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="am-cf admin-main">
+<!-- sidebar start -->
+<div class="admin-sidebar">
+  <ul class="am-list admin-sidebar-list">
+    <li><a href="index"><span class="am-icon-home"></span> 首页</a></li>
+    <li class="admin-parent">
+      <a class="am-cf" data-am-collapse="{target: '#collapse-nav'}"><span class="am-icon-file"></span> 任务管理 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+      <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">
+        <li><a href="new-task"><span class="am-icon-pencil-square-o"></span> 发布任务</a></li>
+        <li><a href="my-task"><span class="am-icon-calendar"></span> 我的任务</a></li>
+      </ul>
+    </li>
+    <li><a href="modify-pwd"><span class="am-icon-pencil-square-o"></span>修改密码</a></li>
+    <li><a href="javascript:;" onclick="logout()"><span class="am-icon-sign-out"></span>注销</a></li>
+  </ul>
+
+  <div class="am-panel am-panel-default admin-sidebar-panel">
+    <div class="am-panel-bd">
+      <p><span class="am-icon-bookmark"></span> 公告</p>
+      <p th:text ="${notice.noticeText}"></p>
+      <p th:text ="${notice.userName}" align="right"></p>
+      <p th:text ="${notice.noticeDate}" align="right"></p>
+    </div>
+  </div>
+</div>
+<!-- sidebar end -->
+
+<!-- content start -->
+<div class="admin-content">
+
+  <div class="am-cf am-padding">
+    <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">任务管理</strong>/<small>发布任务</small></div>
+  </div>
+
+  <div class="am-tabs am-margin" data-am-tabs>
+    <ul class="am-tabs-nav am-nav am-nav-tabs">
+      <li ><a href="#tab">任务详情</a></li>
+    </ul>
+
+    <div class="am-tabs-bd">
+
+      <div class="am-tab-panel am-fade" id="tab">
+        <form class="am-form" id="taskForm">
+          <div class="am-g am-margin-top-sm">
+          <div class="am-u-sm-2 am-text-right">
+            创建日期
+          </div>
+          <div class="am-u-sm-4 am-u-end">
+            <input type="date" class="am-input-sm" name="createDate" id="createDate" readonly="readonly">
+          </div>
+        </div>
+
+          <div class="am-g am-margin-top-sm">
+            <div class="am-u-sm-2 am-text-right">
+              创建人
+            </div>
+            <div class="am-u-sm-4 am-u-end">
+              <input type="text" class="am-input-sm" th:value = "${user.name}"
+                     name="userName" id="userName"
+                     readonly="readonly">
+            </div>
+          </div>
+
+          <div class="am-g am-margin-top-sm">
+            <div class="am-u-sm-2 am-text-right">
+              工作内容
+            </div>
+            <div class="am-u-sm-4 am-u-end">
+              <textarea rows="4" name="taskContent" id="taskContent"></textarea>
+            </div>
+          </div>
+
+          <div class="am-g am-margin-top-sm">
+            <div class="am-u-sm-2 am-text-right">
+              预计完成日期
+            </div>
+            <div class="am-u-sm-4 am-u-end">
+              <input type="date" class="am-input-sm" name="exEndDate" id="exEndDate">
+            </div>
+          </div>
+
+          <div class="am-g am-margin-top-sm">
+            <div class="am-u-sm-2 am-text-right">
+             状态
+            </div>
+            <div class="am-u-sm-4 am-u-end">
+              <input type="text" name="taskStatus" id="taskStatus"
+                     class="am-input-sm" value="进行中" readonly="readonly">
+            </div>
+          </div>
+
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="am-margin">
+    <button type="button" class="am-btn am-btn-primary am-btn-xs" onclick="submitTask()">发布任务</button>
+  </div>
+</div>
+<!-- content end -->
+
+</div>
+
+
+<!--<footer>
+  <hr>
+  <p class="am-padding-left">© 2014 AllMobilize, Inc. Licensed under MIT license.</p>
+</footer>-->
+<script>
+    function logout() {
+        if (confirm("确定要注销吗？")){
+            window.location.href = "logout";
+        }
+    }
+  function getDate() {
+      var time = new Date();
+      var year = time.getFullYear();
+      var month = time.getMonth()+1;
+      if (month<10){
+          month = "0"+month;
+      }
+      var day = time.getDate();
+      if (day<10){
+          day = "0"+day;
+      }
+      var createDate = $("#createDate");
+      createDate.val(year+"-"+month+"-"+day);
+  }
+      function submitTask() {
+          var taskContent = $("#taskContent").val();
+          var exEndDate = $("#exEndDate").val();
+          var createDate = $("#createDate").val();
+          if ((taskContent==""||taskContent==null)||(exEndDate==""||exEndDate==null)){
+              alert("请输入工作内容和预计完成时间");
+          }
+          else if(exEndDate<createDate){
+              alert("预计完成时间输入有误");
+          }
+          else{
+              $.ajax({
+                  type : "POST",
+                  url : "/work-task-manage/task/add-task",
+                  data : $("#taskForm").serialize(),
+                  success:function (data) {
+                      if ("success"==data){
+                          alert("发布成功")
+                          window.location.href = "/work-task-manage/index";
+                      }
+                      else{
+                          alert("发布失败，错误"+data.errMsg)
+                      }
+                  }
+              });
+          }
+      }
+</script>
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script th:src="@{assets/js/polyfill/rem.min.js}"></script>
+<script th:src="@{assets/js/polyfill/respond.min.js}"></script>
+<script th:src="@{assets/js/amazeui.legacy.js}"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script th:src="@{assets/js/jquery.min.js}"></script>
+<script th:src="@{assets/js/amazeui.min.js}"></script>
+<!--<![endif]-->
+<script th:src="@{assets/js/app.js}"></script>
+</body>
+</html>

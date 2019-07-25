@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/task")
@@ -32,11 +30,16 @@ public class TaskController {
         int count =taskService.getTaskCount();
         return count;
     }
+    @RequestMapping("/getMyListSize")
+    public int getMyListSize(int userId){
+        int count =taskService.getMyTaskCount(userId);
+        return count;
+    }
     @RequestMapping("/my-task-list")
-    public Map<String,Object> getMyTaskList(int userId){
+    public Map<String,Object> getMyTaskList(int userId,@RequestParam(value="pageIndex",defaultValue="1")int pageIndex,@RequestParam(value="pageSize",defaultValue="5")int pageSize){
         Map<String,Object> modelMap = new HashMap<String, Object>();
-        List<Task> list =taskService.getTaskByUserId(userId);
-        modelMap.put("taskList",list);
+        PageInfo<Task> pageInfo =taskService.getTaskByUserId(userId,pageIndex,pageSize);
+        modelMap.put("taskList",pageInfo.getList());
         return modelMap;
     }
     @RequestMapping("/add-task")

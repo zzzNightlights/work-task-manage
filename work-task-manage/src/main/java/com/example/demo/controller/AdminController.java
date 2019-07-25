@@ -7,11 +7,13 @@ import com.example.demo.entity.User;
 import com.example.demo.service.NoticeService;
 import com.example.demo.service.TaskService;
 import com.example.demo.service.UserService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -34,13 +36,13 @@ public class AdminController {
     public String adminIndex(HttpSession session, Model model){
         User user = (User) session.getAttribute("user");
         List<Task> newTaskList = taskService.getNewTask();
-        List<Task> myTaskList = taskService.getTaskByUserId(user.getUserId());
+        PageInfo<Task> myTaskList = taskService.getTaskByUserId(user.getUserId(),1,5);
         List<User> userList = userService.findAllUserInfo();
         Notice notice = noticeService.findNewNotice();
         model.addAttribute("notice",notice);
         model.addAttribute("userListSize",userList.size());
         model.addAttribute("newTaskListSize",newTaskList.size());
-        model.addAttribute("myTaskListSize",myTaskList.size());
+        model.addAttribute("myTaskListSize",myTaskList.getList().size());
         model.addAttribute("user",user);
         return "admin-index";
     }
@@ -130,11 +132,16 @@ public class AdminController {
     }
     @ResponseBody
     @RequestMapping("/notice-list")
-    private Map<String,Object> noticeList(){
+    private Map<String,Object> noticeList(@RequestParam(value="pageIndex",defaultValue="1")int pageIndex, @RequestParam(value="pageSize",defaultValue="5")int pageSize){
         Map<String,Object> modelMap = new HashMap<String, Object>();
-        List<Notice> list = noticeService.findNoticeList();
-        modelMap.put("noticeList",list);
+        PageInfo<Notice> list = noticeService.findNoticeList(pageIndex,pageSize);
+        modelMap.put("noticeList",list.getList());
         return modelMap;
+    }
+    @ResponseBody
+    @RequestMapping("/noticeList-size")
+    private int getNoticeNum(){
+        return  noticeService.getNoticeNum();
     }
     @ResponseBody
     @RequestMapping("/delete-notice")
@@ -173,7 +180,7 @@ public class AdminController {
     }
     @ResponseBody
     @RequestMapping("/send-message")
-    public String sendMsg(Mail mail,int userId,HttpSession session){
+    public String sendMsg(Mail mail, int userId, HttpSession session){
         User user = userService.findUserById(userId);
         User admin = (User)session.getAttribute("user");
         mail.setAddress(user.getMail());

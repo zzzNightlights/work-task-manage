@@ -20,6 +20,7 @@
         *
         FROM
         tb_notice
+        ORDER BY notice_date DESC,notice_Id DESC
     </select>
     <delete id="deleteNotice" parameterType="int">
         DELETE
@@ -33,4 +34,10 @@
         tb_notice(user_id,user_name,notice_text,notice_date)
         values (#{userId},#{userName},#{noticeText},#{noticeDate})
     </insert>
+    <select id="queryNoticeNum" parameterType="int" resultType="int">
+        SELECT
+        COUNT(notice_id)
+        FROM
+        tb_notice
+    </select>
 </mapper>

@@ -1,11 +1,9 @@
 package com.example.demo.dao;
 
 import com.example.demo.entity.Task;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public interface TaskDao {
@@ -28,4 +26,6 @@ public interface TaskDao {
     List<Task> queryNewTask();
     //统计任务条数
     int queryTaskCount();
+    //统计我的任务总数
+    int queryMyTaskCount(int userId);
 }
