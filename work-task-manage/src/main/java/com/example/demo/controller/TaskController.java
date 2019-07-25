@@ -21,21 +21,9 @@ public class TaskController {
     @Autowired
     TaskService taskService;
     @RequestMapping("/task-list")
-    public Map<String,Object> getTaskList(@RequestParam(value="pageIndex",defaultValue="1")int pageIndex, int pageSize){
+    public Map<String,Object> getTaskList(@RequestParam(value="pageIndex",defaultValue="1")int pageIndex, @RequestParam(value="pageSize",defaultValue="5")int pageSize){
         Map<String,Object> modelMap = new HashMap<String, Object>();
         PageInfo<Task> pageInfo =taskService.getTaskList(pageIndex,pageSize);
-        /*List<Task> taskList = new ArrayList<>();
-        int n = (pageIndex - 1) * pageSize;
-        int size = n + pageSize;
-        if (size>list.size()){
-            size = list.size();
-        }
-        for (int i = n; i < size; i++)
-        {
-            Task task = list.get(i);
-            taskList.add(task);
-        }
-        modelMap.put("taskList",taskList);*/
         modelMap.put("taskList", pageInfo.getList());
         return modelMap;
     }
