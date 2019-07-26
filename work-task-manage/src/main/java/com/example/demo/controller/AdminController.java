@@ -8,7 +8,6 @@ import com.example.demo.service.NoticeService;
 import com.example.demo.service.TaskService;
 import com.example.demo.service.UserService;
 import com.github.pagehelper.PageInfo;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -4,7 +4,6 @@ import com.example.demo.entity.Mail;
 import com.example.demo.entity.Result;
 import com.example.demo.service.MailService;
 import com.example.demo.service.UserService;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
