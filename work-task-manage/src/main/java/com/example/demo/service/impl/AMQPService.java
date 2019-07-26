@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class AMQPService {
     @Autowired
     MailService mailService;
-    @RabbitListener(queues = "queue.work-task")
+//    @RabbitListener(queues = "queue.work-task")
     public void receiveMsg (Mail mail){
         mailService.sendMail(mail);
     }

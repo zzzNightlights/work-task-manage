@@ -35,9 +35,11 @@ public class PageController {
         List<Task> newTaskList = taskService.getNewTask();
         PageInfo<Task> myTaskList = taskService.getTaskByUserId(user.getUserId(),1,5);
         List<User> userList = userService.findAllUserInfo();
+//        List<Task> myTaskList = taskService.getTaskByUserId(user.getUserId());
+        int userSize = userService.getUserCount();
         Notice notice = noticeService.findNewNotice();
         model.addAttribute("notice",notice);
-        model.addAttribute("userListSize",userList.size());
+        model.addAttribute("userListSize",userSize);
         model.addAttribute("newTaskListSize",newTaskList.size());
         model.addAttribute("myTaskListSize",myTaskList.getList().size());
         model.addAttribute("user",user);

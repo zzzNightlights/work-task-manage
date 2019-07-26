@@ -25,4 +25,6 @@ public interface UserDao {
     User queryUserById(int userId);
     //查询邮件发送信息
     List<Result> queryMailUser();
+    //统计用户数
+    int queryUserCount();
 }

@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.Result;
 import com.example.demo.entity.User;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ public interface UserService {
     boolean addUser(User user);
     //根据用户名查询
     User findUserByUserName(String userName);
+    //查询所有用户信息-分页
+    PageInfo<User> findAllUserInfoPage(int pageIndex, int pageSize);
     //查询所有用户信息
     List<User> findAllUserInfo();
     //根据用户Id删除用户信息
@@ -22,4 +25,6 @@ public interface UserService {
     User findUserById(int userId);
     //查询需要邮件提醒的用户信息
     List<Result> findMailUser();
+    //获取用户总数
+    int getUserCount();
 }

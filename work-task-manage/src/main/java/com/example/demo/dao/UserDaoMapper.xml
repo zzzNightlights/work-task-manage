@@ -68,4 +68,9 @@
         AND T1.user_id = T2.user_id
         GROUP BY t2.name,t2.mail
     </select>
+    <select id="queryUserCount" resultType="int">
+        SELECT count(user_id)
+        FROM
+        tb_user
+    </select>
 </mapper>

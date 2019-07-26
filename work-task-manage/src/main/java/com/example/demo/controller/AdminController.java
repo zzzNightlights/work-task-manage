@@ -12,6 +12,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,17 +31,19 @@ public class AdminController {
     UserService userService;
     @Autowired
     TaskService taskService;
-    @Autowired
-    RabbitTemplate rabbitTemplate;
+//    @Autowired
+//    RabbitTemplate rabbitTemplate;
     @RequestMapping("/admin-index")
     public String adminIndex(HttpSession session, Model model){
         User user = (User) session.getAttribute("user");
         List<Task> newTaskList = taskService.getNewTask();
         PageInfo<Task> myTaskList = taskService.getTaskByUserId(user.getUserId(),1,5);
         List<User> userList = userService.findAllUserInfo();
+//        List<Task> myTaskList = taskService.getTaskByUserId(user.getUserId());
+        int userSize = userService.getUserCount();
         Notice notice = noticeService.findNewNotice();
         model.addAttribute("notice",notice);
-        model.addAttribute("userListSize",userList.size());
+        model.addAttribute("userListSize",userSize);
         model.addAttribute("newTaskListSize",newTaskList.size());
         model.addAttribute("myTaskListSize",myTaskList.getList().size());
         model.addAttribute("user",user);
@@ -91,10 +94,10 @@ public class AdminController {
     }
     @ResponseBody
     @RequestMapping("/user-list")
-    private Map<String,Object> ListUser(){
+    private Map<String,Object> ListUser(@RequestParam(value="pageIndex",defaultValue="1")int pageIndex, @RequestParam(value="pageSize",defaultValue="5")int pageSize){
         Map<String,Object> modelMap = new HashMap<String, Object>();
-        List<User> list = userService.findAllUserInfo();
-        modelMap.put("userList",list);
+        PageInfo<User> pageInfo =userService.findAllUserInfoPage(pageIndex,pageSize);
+        modelMap.put("userList", pageInfo.getList());
         return modelMap;
     }
     @ResponseBody
@@ -139,11 +142,6 @@ public class AdminController {
         return modelMap;
     }
     @ResponseBody
-    @RequestMapping("/noticeList-size")
-    private int getNoticeNum(){
-        return  noticeService.getNoticeNum();
-    }
-    @ResponseBody
     @RequestMapping("/delete-notice")
     public String deleteNotice(int noticeId){
         boolean flag = noticeService.removeNotice(noticeId);
@@ -185,7 +183,13 @@ public class AdminController {
         User admin = (User)session.getAttribute("user");
         mail.setAddress(user.getMail());
         mail.setSubject(mail.getSubject()+"-【"+admin.getName()+"】");
-        rabbitTemplate.convertAndSend("exchange.work-task","work-task",mail);
+//        rabbitTemplate.convertAndSend("exchange.work-task","work-task",mail);
         return "success";
+    }
+    @ResponseBody
+    @GetMapping("/getUserListSize")
+    public int getUserListSize(){
+        int count =userService.getUserCount();
+        return count;
     }
 }

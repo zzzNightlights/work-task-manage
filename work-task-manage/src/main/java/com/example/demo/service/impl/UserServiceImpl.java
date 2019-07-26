@@ -2,8 +2,11 @@ package com.example.demo.service.impl;
 
 import com.example.demo.dao.UserDao;
 import com.example.demo.entity.Result;
+import com.example.demo.entity.Task;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +53,14 @@ public class UserServiceImpl implements UserService {
         else{
             throw new RuntimeException("账号密码不能为空！");
         }
+    }
+
+    @Override
+    public PageInfo<User> findAllUserInfoPage(int pageIndex, int pageSize) {
+        PageHelper.startPage(pageIndex,pageSize);
+        List<User> userList = userDao.queryAllUserInfo();
+        PageInfo<User> pageInfo = new PageInfo<>(userList);
+        return pageInfo;
     }
 
     @Override
@@ -105,5 +116,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Result> findMailUser() {
         return userDao.queryMailUser();
+    }
+
+    @Override
+    public int getUserCount() {
+        return userDao.queryUserCount();
     }
 }
