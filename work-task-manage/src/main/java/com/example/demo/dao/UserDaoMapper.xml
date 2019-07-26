@@ -61,12 +61,12 @@
     </update>
 
     <select id="queryMailUser" resultType="com.example.demo.entity.Result">
-        SELECT count(*) count_num,t2.name, t2.mail
-        FROM tb_task t1, tb_user t2
+        SELECT count(*) count_num,tb_user.name, tb_user.mail
+        FROM tb_task, tb_user
         WHERE CURDATE()-ex_end_date >=1
         AND task_status = '进行中'
-        AND T1.user_id = T2.user_id
-        GROUP BY t2.name,t2.mail
+        AND tb_task.user_id = tb_user.user_id
+        GROUP BY tb_user.name,tb_user.mail
     </select>
     <select id="queryUserCount" resultType="int">
         SELECT count(user_id)

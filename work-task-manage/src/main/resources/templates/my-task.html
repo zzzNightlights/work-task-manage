@@ -62,7 +62,7 @@
     <div class="am-panel am-panel-default admin-sidebar-panel">
       <div class="am-panel-bd">
         <p><span class="am-icon-bookmark"></span> 公告</p>
-        <p th:text ="${notice.noticeText}"></p>
+        <p style="word-break:break-all; word-wrapL:break-word;" th:text ="${notice.noticeText}"></p>
         <p th:text ="${notice.userName}" align="right"></p>
         <p th:text ="${notice.noticeDate}" align="right"></p>
       </div>
@@ -113,17 +113,17 @@
     <div class="am-g">
       <div class="am-u-sm-12">
         <form class="am-form">
-          <table class="am-table am-table-striped am-table-hover table-main" id="taskTable">
+          <table class="am-table am-table-striped am-table-hover table-main" id="taskTable" width="100%" style="table-layout: fixed;word-break:break-all ; word-wrap:break-word">
             <thead>
             <tr>
-              <th><input type="checkbox"/></th>
-              <th>ID</th>
+              <th width="5%"><input type="checkbox"/></th>
+              <th width="10%">ID</th>
               <th>创建日期</th>
-              <th>工作内容</th>
+              <th width="18%">工作内容</th>
               <th>预计完成时间</th>
               <th>实际完成时间</th>
               <th>状态</th>
-              <th>操作</th>
+              <th colspan="3" style="text-align:center;" width="19%">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -207,14 +207,14 @@
                         actEndDate = "";
                     }
                     var taskStatus = list[index].taskStatus;
-                    var td = "<td><input type=\"checkbox\" /></td>"+"<td>"+taskId+"</td>"+"<td>"+createDate+"</td>"+"<td>"+taskContent+"</td>"+"<td>"+exEndDate+"</td>"+
-                        "<td>"+actEndDate+"</td>" +"<td>"+taskStatus+"</td>"+"<td><div class=\"am-btn-toolbar\">\n" +
-                        "                  <div class=\"am-btn-group am-btn-group-xs\">\n" +
+                    var td = "<td width=\"5%\"><input type=\"checkbox\" /></td>"+"<td width=\"10%\">"+taskId+"</td>"+"<td>"+createDate+"</td>"+"<td width=\"18%\">"+taskContent+"</td>"+"<td>"+exEndDate+"</td>"+
+                        "<td>"+actEndDate+"</td>" +"<td>"+taskStatus+"</td>"+"<td width=\"6%\">" +
                         "                    <button type='button'onclick=\"modifyTask("+taskId+",'"+taskStatus+"')\" class=\"am-btn am-btn-default am-btn-xs am-text-secondary\"><span class=\"am-icon-pencil-square-o\"></span> 编辑</button>\n"+
+                        "                </td>"+"<td width=\"6%\">" +
                         "                    <button type='button'onclick=\"deleteTask("+taskId+")\" class=\"am-btn am-btn-default am-btn-xs am-text-danger\" ><span class=\"am-icon-trash-o\"></span> 删除</button>\n" +
+                        "                </td>"+"<td width=\"6%\">" +
                         "                    <button type='button'onclick=\"finishTask("+taskId+",'"+taskStatus+"')\" class=\"am-btn am-btn-default am-btn-xs\" style=\"color: #FFFFFF;background-color: mediumseagreen\">完成</button>\n" +
-                        "                  </div>" +
-                        "                </div><td>";
+                        "                </td>";
                     if (statusValue==taskStatus||statusValue=="全部") {
                         $("#taskTable").append("<tr>" + td + "</tr>");
                     }

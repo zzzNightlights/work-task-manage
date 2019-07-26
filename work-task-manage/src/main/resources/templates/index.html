@@ -61,7 +61,7 @@
     <div class="am-panel am-panel-default admin-sidebar-panel">
       <div class="am-panel-bd">
         <p><span class="am-icon-bookmark"></span> 公告</p>
-        <p th:text ="${notice.noticeText}"></p>
+        <p style="word-break:break-all; word-wrapL:break-word;" th:text ="${notice.noticeText}"></p>
         <p th:text ="${notice.userName}" align="right"></p>
         <p th:text ="${notice.noticeDate}" align="right"></p>
       </div>
@@ -85,7 +85,7 @@
 
     <div class="am-g">
       <div class="am-u-sm-12">
-        <table  class="am-table am-table-bd am-table-striped admin-content-table" id="taskTable">
+        <table  class="am-table am-table-bd am-table-striped admin-content-table" id="taskTable" style="table-layout: fixed;word-break:break-all ; word-wrap:break-word">
           <thead>
           </thead>
           <tbody>
