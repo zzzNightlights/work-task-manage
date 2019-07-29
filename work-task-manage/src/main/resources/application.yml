@@ -24,7 +24,11 @@ spring:
     #close thymeleaf cache
   thymeleaf:
     cache: false
-    #redis config
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: UTF-8
+  #redis config
   redis:
     host: 127.0.0.1
 #  mail:
