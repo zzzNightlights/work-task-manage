@@ -33,8 +33,14 @@ public class PageController {
     public String index(HttpSession session, Model model){
         User user = (User) session.getAttribute("user");
         List<Task> newTaskList = taskService.getNewTask();
-        PageInfo<Task> myTaskList = taskService.getTaskByUserId(user.getUserId(),1,5);
-        List<User> userList = userService.findAllUserInfo();
+        PageInfo<Task> myTaskList = new PageInfo<Task>();
+        if (user.getType()==1){
+            myTaskList = taskService.getTaskByUserId(user.getUserId(),1,5);
+        }
+        if (user.getType()==0){
+            myTaskList = taskService.getTaskByToUserId(user.getUserId(),1,5);
+        }
+        //List<User> userList = userService.findAllUserInfo();
 //        List<Task> myTaskList = taskService.getTaskByUserId(user.getUserId());
         int userSize = userService.getUserCount();
         Notice notice = noticeService.findNewNotice();
@@ -49,7 +55,9 @@ public class PageController {
     @RequestMapping("/new-task")
     public String newTask(HttpSession session, Model model){
         User user = (User) session.getAttribute("user");
+        List<User> userList = userService.findAllUserInfo();
         model.addAttribute("user",user);
+        model.addAttribute("userList",userList);
         Notice notice = noticeService.findNewNotice();
         model.addAttribute("notice",notice);
         return "new-task";

@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.Task;
 import com.example.demo.entity.User;
 import com.example.demo.service.TaskService;
+import com.example.demo.service.UserService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,8 @@ import java.util.Map;
 @RequestMapping("/task")
 @RestController
 public class TaskController {
+    @Autowired
+    UserService userService;
     @Autowired
     TaskService taskService;
     @RequestMapping("/task-list")
@@ -36,9 +39,17 @@ public class TaskController {
         return count;
     }
     @RequestMapping("/my-task-list")
-    public Map<String,Object> getMyTaskList(int userId,@RequestParam(value="pageIndex",defaultValue="1")int pageIndex,@RequestParam(value="pageSize",defaultValue="5")int pageSize){
+    public Map<String,Object> getMyTaskList(HttpSession session,@RequestParam(value="pageIndex",defaultValue="1")int pageIndex,@RequestParam(value="pageSize",defaultValue="5")int pageSize){
+        User user = (User) session.getAttribute("user");
+        int userId = user.getUserId();
         Map<String,Object> modelMap = new HashMap<String, Object>();
-        PageInfo<Task> pageInfo =taskService.getTaskByUserId(userId,pageIndex,pageSize);
+        PageInfo<Task> pageInfo = new PageInfo<Task>();
+        if (user.getType()==1){
+            pageInfo =taskService.getTaskByUserId(userId,pageIndex,pageSize);
+        }
+        if (user.getType()==0){
+            pageInfo =taskService.getTaskByToUserId(userId,pageIndex,pageSize);
+        }
         modelMap.put("taskList",pageInfo.getList());
         return modelMap;
     }
@@ -46,6 +57,12 @@ public class TaskController {
     public String addTask(Task task, HttpSession session){
         User user = (User)session.getAttribute("user");
         task.setUserId(user.getUserId());
+        if (task.getToUserId()==null)
+        {
+            task.setToUserId(user.getUserId());
+        }
+        User userInfo = userService.findUserById(task.getToUserId());
+        task.setToUserName(userInfo.getName());
         boolean flag = taskService.addTask(task);
         if (flag){
             return "success";

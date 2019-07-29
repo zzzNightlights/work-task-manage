@@ -105,6 +105,17 @@
             </div>
           </div>
 
+          <div class="am-g am-margin-top-sm" th:if="${user.type==1}">
+            <div class="am-u-sm-2 am-text-right">
+              执行人
+            </div>
+            <div class="am-u-sm-4 am-u-end">
+              <select class="am-input-sm" name="toUserId" id="toUserId">
+                <option th:each="user:${userList}" th:value="${user.userId}" th:text="${user.name}"></option>
+              </select>
+            </div>
+          </div>
+
           <div class="am-g am-margin-top-sm">
             <div class="am-u-sm-2 am-text-right">
               工作内容
@@ -176,8 +187,9 @@
           var taskContent = $("#taskContent").val();
           var exEndDate = $("#exEndDate").val();
           var createDate = $("#createDate").val();
-          if ((taskContent==""||taskContent==null)||(exEndDate==""||exEndDate==null)){
-              alert("请输入工作内容和预计完成时间");
+          var toUserId = $("#toUserId").val();
+          if ((taskContent==""||taskContent==null)||(exEndDate==""||exEndDate==null)||(toUserId==""||toUserId==null)){
+              alert("请输入完整信息");
           }
           else if(exEndDate<createDate){
               alert("预计完成时间输入有误");

@@ -16,6 +16,8 @@ public interface TaskDao {
     int insertTask(Task task);
     //根据当前用户所有任务
     List<Task> queryTaskByUserId(int userId);
+    //根据执行人Id查询任务
+    List<Task> queryTaskByToUserId(int toUserId);
     //根据任务ID删除任务
     int deleteTaskById(int taskId);
     //根据任务Id完成任务

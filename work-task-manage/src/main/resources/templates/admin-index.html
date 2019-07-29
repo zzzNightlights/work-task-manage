@@ -27,6 +27,7 @@
   <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
 
     <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
+      <li><a href="../index"><span class="am-icon-user"></span> 切换到普通用户</a></li>
       <li><a href="javascript:;"><span class="am-icon-envelope-o"></span> 通知 <span class="am-badge am-badge-warning">5</span></a></li>
       <li class="am-dropdown" data-am-dropdown>
         <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
@@ -151,6 +152,7 @@
         $("#taskTable").append("<tr>\n" +
             "            <th>创建日期</th>\n" +
             "            <th>创建人</th>\n" +
+            "            <th>执行人</th>\n" +
             "            <th>工作内容</th>\n" +
             "            <th>预计完成时间</th>\n" +
             "            <th>实际完成时间</th>\n" +
@@ -169,6 +171,7 @@
                     createDate = createDate.substr(0,10);
                     var taskId = list[index].taskId;
                     var userName = list[index].userName;
+                    var toUserName = list[index].toUserName;
                     var taskContent = list[index].taskContent;
                     var exEndDate = list[index].exEndDate;
                     var userId = list[index].userId;
@@ -183,7 +186,7 @@
                         actEndDate = "";
                     }
                     var taskStatus = list[index].taskStatus;
-                    var td = "<td>"+createDate+"</td>"+"<td>"+userName+"</td>"+"<td>"+taskContent+"</td>"+"<td>"+exEndDate+"</td>"+
+                    var td = "<td>"+createDate+"</td>"+"<td>"+userName+"</td>"+"<td>"+toUserName+"</td>"+"<td>"+taskContent+"</td>"+"<td>"+exEndDate+"</td>"+
                         "<td>"+actEndDate+"</td>" +"<td>"+taskStatus+"</td>"+"<td><a style='color: #0b6fa2;font-size: 10px' href='admin-message?userId="+userId+"&taskId="+taskId+"'>发消息</a></td>";
                     $("#taskTable").append("<tr>"+td+"</tr>");
                 });

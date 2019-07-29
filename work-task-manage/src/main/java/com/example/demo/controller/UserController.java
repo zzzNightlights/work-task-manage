@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
+import com.example.demo.utils.AlgorithmTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +18,8 @@ public class UserController {
     @Autowired
     UserService userService;
     @RequestMapping("/do-login")
-    public String findUserInfo(HttpSession session, String username, String password){
+    public String findUserInfo(HttpSession session, String username, String password) throws Exception{
+        password = AlgorithmTools.getMD5(password,"MD5Out32Str");
         User user = userService.checkUserLogin(username,password);
         if (user!=null){
             session.setAttribute("user",user);
@@ -31,13 +33,15 @@ public class UserController {
     }
 
     @RequestMapping("/modify-pwd")
-    public String modifyPwd(String oldPassword,String newPassword,HttpSession session){
+    public String modifyPwd(String oldPassword,String newPassword,HttpSession session) throws Exception{
         User user = (User)session.getAttribute("user");
         String username = user.getUsername();
+        oldPassword = AlgorithmTools.getMD5(oldPassword,"MD5Out32Str");
         User userInfo = userService.checkUserLogin(username,oldPassword);
         if (userInfo==null){
             return "mismatch";
         }
+        newPassword = AlgorithmTools.getMD5(newPassword,"MD5Out32Str");
         user.setPassword(newPassword);
         boolean flag = userService.modifyUserInfo(user);
         if (flag){

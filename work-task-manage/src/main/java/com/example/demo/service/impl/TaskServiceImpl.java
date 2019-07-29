@@ -55,6 +55,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public PageInfo<Task> getTaskByToUserId(int toUserId, int pageIndex, int pageSize) {
+        PageHelper.startPage(pageIndex,pageSize);
+        List<Task> taskList = taskDao.queryTaskByToUserId(toUserId);
+        PageInfo<Task> pageInfo = new PageInfo<>(taskList);
+        return pageInfo;
+    }
+
+    @Override
     @CacheEvict(cacheNames = "taskList",allEntries=true)
     public boolean removeTaskById(int taskId) {
         if (taskId!=0){

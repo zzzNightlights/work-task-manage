@@ -13,6 +13,8 @@ public interface TaskService {
     boolean addTask(Task task);
     //获取个人任务列表
     PageInfo<Task> getTaskByUserId(int userId, int pageIndex, int pageSize);
+    //获取执行人任务列表
+    PageInfo<Task> getTaskByToUserId(int toUserId, int pageIndex, int pageSize);
     //根据任务ID删除任务
     boolean removeTaskById(int taskId);
     //根据任务ID完成任务

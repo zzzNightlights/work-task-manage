@@ -27,11 +27,20 @@
         user_id = #{userId}
         ORDER BY create_date DESC
     </select>
+    <select id="queryTaskByToUserId" parameterType="int" resultType="com.example.demo.entity.Task">
+        SELECT
+        *
+        FROM
+        tb_task
+        WHERE
+        to_user_id = #{toUserId}
+        ORDER BY create_date DESC
+    </select>
     <insert id="insertTask" parameterType="com.example.demo.entity.Task" useGeneratedKeys="true"
             keyProperty="taskId" keyColumn="task_id">
         INSERT INTO
-        tb_task(create_date,user_id,user_name,task_content,ex_end_date,act_end_date,task_status)
-        values (#{createDate},#{userId},#{userName},#{taskContent},#{exEndDate},#{actEndDate},#{taskStatus})
+        tb_task(create_date,user_id,to_user_id,to_user_name,user_name,task_content,ex_end_date,act_end_date,task_status)
+        values (#{createDate},#{userId},#{toUserId},#{toUserName},#{userName},#{taskContent},#{exEndDate},#{actEndDate},#{taskStatus})
     </insert>
     <delete id="deleteTaskById" parameterType="int">
         DELETE

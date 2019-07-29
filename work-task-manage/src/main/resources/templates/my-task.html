@@ -119,6 +119,7 @@
               <th width="5%"><input type="checkbox"/></th>
               <th width="10%">ID</th>
               <th>创建日期</th>
+              <th>创建人</th>
               <th width="18%">工作内容</th>
               <th>预计完成时间</th>
               <th>实际完成时间</th>
@@ -185,7 +186,7 @@
         $("#taskTable tbody").empty();
         $.ajax({
             type:"GET",
-            url:"/work-task-manage/task/my-task-list?userId="+userId+"&pageIndex="+pageIndex+"&pageSize="+pageSize,
+            url:"/work-task-manage/task/my-task-list?pageIndex="+pageIndex+"&pageSize="+pageSize,
             dataType:"json",
             success:function(data){
                 var list = eval(data.taskList); //数组
@@ -194,6 +195,7 @@
                     var taskId = list[index].taskId;
                     var createDate =list[index].createDate;
                     createDate = createDate.substr(0,10);
+                    var userName = list[index].userName;
                     var taskContent = list[index].taskContent;
                     var exEndDate = list[index].exEndDate;
                     if(exEndDate!=null){
@@ -207,7 +209,7 @@
                         actEndDate = "";
                     }
                     var taskStatus = list[index].taskStatus;
-                    var td = "<td width=\"5%\"><input type=\"checkbox\" /></td>"+"<td width=\"10%\">"+taskId+"</td>"+"<td>"+createDate+"</td>"+"<td width=\"18%\">"+taskContent+"</td>"+"<td>"+exEndDate+"</td>"+
+                    var td = "<td width=\"5%\"><input type=\"checkbox\" /></td>"+"<td width=\"10%\">"+taskId+"</td>"+"<td>"+createDate+"</td>"+"<td>"+userName+"</td>"+"<td width=\"18%\">"+taskContent+"</td>"+"<td>"+exEndDate+"</td>"+
                         "<td>"+actEndDate+"</td>" +"<td>"+taskStatus+"</td>"+"<td width=\"6%\">" +
                         "                    <button type='button'onclick=\"modifyTask("+taskId+",'"+taskStatus+"')\" class=\"am-btn am-btn-default am-btn-xs am-text-secondary\"><span class=\"am-icon-pencil-square-o\"></span> 编辑</button>\n"+
                         "                </td>"+"<td width=\"6%\">" +

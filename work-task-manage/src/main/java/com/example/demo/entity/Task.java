@@ -6,16 +6,26 @@ import java.io.Serializable;
 
 @Data
 public class Task implements Serializable {
+	private Integer toUserId;
     private int taskId;
     private String createDate;
     private int userId;
     private String userName;
+	private String toUserName;
     private String taskContent;
     private String exEndDate;
     private String actEndDate;
     private String taskStatus;
 
-    public int getTaskId() {
+	public Integer getToUserId() {
+		return toUserId;
+	}
+
+	public void setToUserId(Integer toUserId) {
+		this.toUserId = toUserId;
+	}
+
+	public int getTaskId() {
 		return taskId;
 	}
 
@@ -45,6 +55,14 @@ public class Task implements Serializable {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getToUserName() {
+		return toUserName;
+	}
+
+	public void setToUserName(String toUserName) {
+		this.toUserName = toUserName;
 	}
 
 	public String getTaskContent() {
@@ -78,18 +96,4 @@ public class Task implements Serializable {
 	public void setTaskStatus(String taskStatus) {
 		this.taskStatus = taskStatus;
 	}
-
-	@Override
-    public String toString() {
-        return "Task{" +
-                "taskId=" + taskId +
-                ", createDate='" + createDate + '\'' +
-                ", userId=" + userId +
-                ", userName='" + userName + '\'' +
-                ", taskContent='" + taskContent + '\'' +
-                ", exEndDate='" + exEndDate + '\'' +
-                ", actEndDate='" + actEndDate + '\'' +
-                ", taskStatus='" + taskStatus + '\'' +
-                '}';
-    }
 }
